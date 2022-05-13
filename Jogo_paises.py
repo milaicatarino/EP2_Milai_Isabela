@@ -1,5 +1,6 @@
 import random as r
 import math
+from dados import *
 
 # Funções necessárias
 # Normalizando bases de países
@@ -72,13 +73,36 @@ print ('••••••••••••••••••••••••
 print ("-----Bem-vindo ao Jogo Insper Países!-----")
 print ('••••••••••••••••••••••••••••••••••••••••••')
 print ('========== Design de Software ============')
-print ('')
+print('')
 print ('Possíveis comandos:')
 print ('    dica = entra no mercado de dicas')
 print ('    desisto = desiste da rodada')
 print ('    inventário = exibe sua posição')
-print ('')
+print('')
+dic_paises = normaliza(dic)
+pais = sorteia_pais(dic_paises)
 print ('Um país foi sorteado aleatoriamente, tente adivinhar!')
 print ('Você tem 20 tentativa(s)')
-print ('')
-input('Qual o seu palpite?')
+
+tentativa = 20
+lista_tentativas = []
+distancias = {}
+while tentativa != 0:
+    jogada = str(input('Qual o seu palpite? '))
+    if jogada == 'desisto':
+        certeza = str(input('Tem certeza que você quer desistir? [s/n] '))
+        if certeza == 's':
+            print('O pais era: {}'.format(pais))
+            print('')
+            continua = str(input('Quer jogar de novo? [s/n] '))
+            if continua == 's':
+                tentativa = tentativa
+            else:
+                print('')
+                print('Até a próxima!')
+                tentativa = 0
+        else:
+            print('')
+            tentativa = tentativa
+
+        
