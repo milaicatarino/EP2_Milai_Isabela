@@ -71,11 +71,11 @@ def sorteia_letra(palavra,lista):
     return r.choice(saida)
 
 # Mostra inventario
-def mostra_inventario(dic_dist, dic_dicas, tentativa):
+def mostra_inventario(l_dist, dic_dicas, tentativa):
     print('Distâncias:')
-    if dic_dist != {}:
-        for pais,d in dic_dist.items():
-            print('      '+ str(int(d)) + ' km -> ' + str(pais))
+    if l_dist != {}:
+        for lista in l_dist:
+            print('      '+ str(int(lista[1])) + ' km -> ' + str(lista[0]))
     
     print('')
     print('Dicas:')
@@ -134,8 +134,10 @@ populacao = dic_paises[pais]["populacao"]
 continente = dic_paises[pais]["continente"]
 
 tentativa = 20
-lista_tentativas = []
-dic_dist = {}
+l_paises = []
+for pais in dic_paises.keys():
+    l_paises.append([pais,dic_paises[pais]["area"]])
+l_dist = []
 dic_dicas = {}
 l_cores = []
 l_cap = []
@@ -187,40 +189,54 @@ while tentativa != 0:
             indice = l_cor_bandeira.index(cor_dica)
             del l_cor_bandeira[indice]
             tentativa -= 4
-            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
-            print(i)
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
         elif opcao == 2:
             cap_dica = sorteia_letra(dic_paises[pais]["capital"],l_capital_escolhida)
             l_cap.append(cap_dica)
             dic_dicas['Letra da capital'] = l_cap
             l_capital_escolhida.append(cap_dica)
             tentativa -= 3
-            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
-            print(i)
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
         elif opcao == 3:
             dic_dicas['Área (km2)'] = area_pais
             tentativa -= 6
-            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
-            print(i)
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
             indice = l_dica_disponivel.index(3)
             del l_dica_disponivel[indice]
         elif opcao == 4:
             dic_dicas['População'] = populacao
             tentativa -= 5
-            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
-            print(i)
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
             indice = l_dica_disponivel.index(4)
             del l_dica_disponivel[indice]
         elif opcao == 5:
             dic_dicas['Continente'] = continente
             tentativa -= 7
-            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
-            print(i)
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
             indice = l_dica_disponivel.index(5)
             del l_dica_disponivel[indice]
         
     elif jogada == "inventario":
-        print(mostra_inventario(dic_dist, dic_dicas, tentativa))
+        print(mostra_inventario(l_dist, dic_dicas, tentativa))
         tentativa = tentativa
 
-    #else:
+    elif jogada == pais:
+        print(f'\033[36mParabénsssss!! Você ganhou o jogo.\033[m')
+        tentativa = 0
+
+    else:
+        if esta_na_lista(jogada, l_paises):
+            lat_pais = dic_paises[pais]["geo"]["latitude"]
+            long_pais = dic_paises[pais]["geo"]["longitude"]
+            lat = dic_paises[jogada]["geo"]["latitude"]
+            long = dic_paises[jogada]["geo"]["longitude"]
+            d = haversine(6371, lat_pais, long_pais, lat, long)
+            l_dist = adiciona_em_ordem(jogada,d,l_dist)
+            tentativa -= 1
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
+        else:
+            print('Não reconheço esse país. Tente novamente.')
+            tentativa = tentativa 
+            print ('')
+
+
