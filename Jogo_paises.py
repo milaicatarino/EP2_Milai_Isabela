@@ -1,5 +1,7 @@
 import random as r
 import math
+
+from pyrsistent import l
 from dados import *
 
 # Funções necessárias
@@ -69,7 +71,7 @@ def sorteia_letra(palavra,lista):
     return r.choice(saida)
 
 # Mostra inventario
-def mostra_inventario(dic_dist, dic_dicas):
+def mostra_inventario(dic_dist, dic_dicas, tentativa):
     print('Distâncias:')
     if dic_dist != {}:
         for pais,d in dic_dist.items():
@@ -80,6 +82,27 @@ def mostra_inventario(dic_dist, dic_dicas):
     if dic_dicas != {}:
         for tipo,resp in dic_dicas.items():
             print('      -'+ str(tipo) + ': ' + str(resp))
+    
+    print('')
+    print('Você tem {} tentativa(s).'.format(tentativa))
+    print('')
+
+# Mosta dicas
+def mostra_dicas(l_dica_disponivel,tentativa):
+    print('Mercado de dicas')   
+    print ('----------------------------------------') 
+    if 1 in l_dica_disponivel and tentativa >= 4:
+        print ('1. Cor da bandeira  - custa 4 tentativas')
+    if 2 in l_dica_disponivel and tentativa >= 3:
+        print ('2. Letra da capital - custa 3 tentativas')
+    if 3 in l_dica_disponivel and tentativa >= 6:
+        print ('3. Área             - custa 6 tentativas')
+    if 4 in l_dica_disponivel and tentativa >= 5:
+        print ('4. População        - custa 5 tentativas')
+    if 5 in l_dica_disponivel and tentativa >= 7:
+        print ('5. Continente       - custa 7 tentativas')
+    print ('0. Sem dica')
+    print ('----------------------------------------')
 
 print ('==========================================')
 print ('••••••••••••••••••••••••••••••••••••••••••')
@@ -102,9 +125,7 @@ for cor,porcentagem in dic_paises[pais]["bandeira"].items():
     if porcentagem != 0:
         l_cor_bandeira.append(cor)
 
-l_lista_capital = []
-for letra in dic_paises[pais]["capital"]:
-    l_lista_capital.append(letra)
+l_capital_escolhida = []
 
 area_pais = dic_paises[pais]["area"]
 
@@ -118,8 +139,7 @@ dic_dist = {}
 dic_dicas = {}
 l_cores = []
 l_cap = []
-l_pop = []
-l_cont = []
+l_dica_disponivel = [0,1,2,3,4,5]
 
 while tentativa != 0:
     jogada = str(input('Qual o seu palpite? '))
@@ -140,63 +160,67 @@ while tentativa != 0:
             tentativa = tentativa
 
     elif jogada == 'dica':
-        print('Mercado de dicas')   
-        print ('----------------------------------------') 
-        print ('1. Cor da bandeira  - custa 4 tentativas')
-        print ('2. Letra da capital - custa 3 tentativas')
-        print ('3. Área             - custa 6 tentativas')
-        print ('4. População        - custa 5 tentativas')
-        print ('5. Continente       - custa 7 tentativas')
-        print ('0. Sem dica')
-        print ('----------------------------------------')
-        opcao = int(input('Escolha sua opção [0|1|2|3|4|5]: '))
+        print(mostra_dicas(l_dica_disponivel,tentativa))
+        opcao = int(input('Escolha sua opção {}: '.format(l_dica_disponivel)))  
+        if tentativa < 7:
+            indice = l_dica_disponivel.index(5)
+            del l_dica_disponivel[indice]
+        elif tentativa < 6:
+            indice = l_dica_disponivel.index(3)
+            del l_dica_disponivel[indice]
+        elif tentativa < 5:
+            indice = l_dica_disponivel.index(4)
+            del l_dica_disponivel[indice]
+        elif tentativa < 4:
+            indice = l_dica_disponivel.index(1)
+            del l_dica_disponivel[indice]
+        elif tentativa < 3:
+            indice = l_dica_disponivel.index(2)
+            del l_dica_disponivel[indice]
+        
         if opcao == 0:
             tentativa = tentativa
-
         elif opcao == 1:
             cor_dica = r.choice(l_cor_bandeira)
             l_cores.append(cor_dica)
             dic_dicas['Cor da bandeira'] = l_cores
-            del l_cor_bandeira(cor_dica)
-            i = mostra_inventario(dic_dist, dic_dicas)
-            print(i)
+            indice = l_cor_bandeira.index(cor_dica)
+            del l_cor_bandeira[indice]
             tentativa -= 4
-        
+            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
+            print(i)
         elif opcao == 2:
-            cap_dica = r.choice(l_lista_capital)
+            cap_dica = sorteia_letra(dic_paises[pais]["capital"],l_capital_escolhida)
             l_cap.append(cap_dica)
             dic_dicas['Letra da capital'] = l_cap
-            del l_lista_capital(cap_dica)
-            i = mostra_inventario(dic_dist, dic_dicas)
-            print(i)
+            l_capital_escolhida.append(cap_dica)
             tentativa -= 3
-        
+            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
+            print(i)
         elif opcao == 3:
-            area_dica = r.choice(area_pais)
-            l_area.append(area_dica)
-            dic_dicas['Área (km2)'] = l_area
-            del area_pais(area_dica)
-            i = mostra_inventario(dic_dist, dic_dicas)
-            print(i)
+            dic_dicas['Área (km2)'] = area_pais
             tentativa -= 6
-        
+            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
+            print(i)
+            indice = l_dica_disponivel.index(3)
+            del l_dica_disponivel[indice]
         elif opcao == 4:
-            pop_dica = r.choice(populacao)
-            l_pop.append(pop_dica)
-            dic_dicas['Área (km2)'] = pop_dica
-            del populacao(pop_dica)
-            i = mostra_inventario(dic_dist, dic_dicas)
-            print(i)
+            dic_dicas['População'] = populacao
             tentativa -= 5
-        
-        elif opcao == 5:
-            cont_dica = r.choice(continente)
-            l_cont.append(cont_dica)
-            dic_dicas['Área (km2)'] = cont_dica
-            del continente(cont_dica)
-            i = mostra_inventario(dic_dist, dic_dicas)
+            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
             print(i)
+            indice = l_dica_disponivel.index(4)
+            del l_dica_disponivel[indice]
+        elif opcao == 5:
+            dic_dicas['Continente'] = continente
             tentativa -= 7
-
+            i = mostra_inventario(dic_dist, dic_dicas, tentativa)
+            print(i)
+            indice = l_dica_disponivel.index(5)
+            del l_dica_disponivel[indice]
         
+    elif jogada == "inventario":
+        print(mostra_inventario(dic_dist, dic_dicas, tentativa))
+        tentativa = tentativa
 
+    else:
