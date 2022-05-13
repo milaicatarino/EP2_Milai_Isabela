@@ -71,7 +71,7 @@ def sorteia_letra(palavra,lista):
 # Mostra inventario
 def mostra_inventario(l_dist, dic_dicas, tentativa):
     print('Distâncias:')
-    if l_dist != {}:
+    if l_dist != []:
         for lista in l_dist:
             if int(lista[1]) <= 1000:
                 print(f'\033[32m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
@@ -188,7 +188,7 @@ while tentativa >= 0:
         if jogada == 'desisto':
             certeza = str(input('Tem certeza que você quer desistir? [s/n] '))
             if certeza == 's':
-                print('O pais era: {}'.format(pais))
+                print('O país era: {}'.format(pais))
                 print('')
                 continua = str(input('Quer jogar de novo? [s/n] '))
                 if continua == 's':
