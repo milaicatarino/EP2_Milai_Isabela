@@ -98,19 +98,25 @@ print ('Um país foi sorteado aleatoriamente, tente adivinhar!')
 print ('Você tem 20 tentativa(s)')
 
 l_cor_bandeira = []
-for cor in dic_paises[pais]["bandeira"].values():
-    l_cor_bandeira.append(cor)
-
-print(l_cor_bandeira)
-print(dic_paises[pais]["capital"])
+for cor,porcentagem in dic_paises[pais]["bandeira"].items():
+    if porcentagem != 0:
+        l_cor_bandeira.append(cor)
 
 l_lista_capital = []
-for letra in dic_paises[pais]["capital"].values():
-    l_cor_bandeira.append(cor)
+for letra in dic_paises[pais]["capital"]:
+    l_lista_capital.append(letra)
+
+area_pais = dic_paises[pais]["area"]
+
+populacao = dic_paises[pais]["populacao"]
+
+continente = dic_paises[pais]["continente"]
 
 tentativa = 20
 lista_tentativas = []
-distancias = {}
+dic_dist = {}
+dic_dicas = {}
+
 while tentativa != 0:
     jogada = str(input('Qual o seu palpite? '))
     if jogada == 'desisto':
@@ -142,4 +148,11 @@ while tentativa != 0:
         opcao = int(input('Escolha sua opção [0|1|2|3|4|5]: '))
         if opcao == 0:
             tentativa = tentativa
-        #elif opcao = 1:
+
+        elif opcao == 1:
+            cor_dica = r.choice(l_cor_bandeira)
+            dic_dicas['Cor da bandeira'] = cor_dica
+            del l_cor_bandeira(cor_dica)
+            tentativa -= 4
+        
+        elif opcao == 2:
