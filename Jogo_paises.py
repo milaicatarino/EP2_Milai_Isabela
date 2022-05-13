@@ -1,7 +1,5 @@
 import random as r
 import math
-
-from pyrsistent import l
 from dados import *
 
 # Funções necessárias
@@ -73,9 +71,20 @@ def sorteia_letra(palavra,lista):
 # Mostra inventario
 def mostra_inventario(l_dist, dic_dicas, tentativa):
     print('Distâncias:')
-    if l_dist != {}:
+    if l_dist != []:
         for lista in l_dist:
-            print('      '+ str(int(lista[1])) + ' km -> ' + str(lista[0]))
+            if int(lista[1]) <= 1000:
+                print(f'\033[32m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
+            elif int(lista[1]) <= 2500:
+                print(f'\033[33m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
+            elif int(lista[1]) <= 5000:
+                print(f'\033[34m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
+            elif int(lista[1]) <= 6500:
+                print(f'\033[37m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
+            elif int(lista[1]) <= 8000:
+                print(f'\033[35m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
+            else:
+                print(f'\033[31m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
     
     print('')
     print('Dicas:')
@@ -85,7 +94,7 @@ def mostra_inventario(l_dist, dic_dicas, tentativa):
     
     print('')
     print('Você tem {} tentativa(s).'.format(tentativa))
-    print('')
+    return ' '
 
 # Mosta dicas
 def mostra_dicas(l_dica_disponivel,tentativa):
@@ -103,6 +112,36 @@ def mostra_dicas(l_dica_disponivel,tentativa):
         print ('5. Continente       - custa 7 tentativas')
     print ('0. Sem dica')
     print ('----------------------------------------')
+
+# Cria lista das dicas disponiveis
+def dicas_possiveis(tentativa):
+    if tentativa <= 2:
+        for num in l_dica_disponivel:
+            if num != 0:
+                indice = l_dica_disponivel.index(num)
+                del l_dica_disponivel[indice]
+    elif tentativa <= 3:
+        for num in l_dica_disponivel:
+            if num != 0 and num != 2:
+                indice = l_dica_disponivel.index(num)
+                del l_dica_disponivel[indice]
+    elif tentativa <= 4:
+        for num in l_dica_disponivel:
+            if num != 0 and num != 2 and num != 1:
+                indice = l_dica_disponivel.index(num)
+                del l_dica_disponivel[indice]
+    elif tentativa <= 5:
+        for num in l_dica_disponivel:
+            if num != 0 and num != 2 and num != 1 and num != 4:
+                indice = l_dica_disponivel.index(num)
+                del l_dica_disponivel[indice]
+    elif tentativa <= 6:
+        for num in l_dica_disponivel:
+            if num != 0 and num != 2 and num != 1 and num != 4 and num != 3:
+                indice = l_dica_disponivel.index(num)
+                del l_dica_disponivel[indice]
+
+    return l_dica_disponivel
 
 print ('==========================================')
 print ('••••••••••••••••••••••••••••••••••••••••••')
@@ -143,100 +182,96 @@ l_cores = []
 l_cap = []
 l_dica_disponivel = [0,1,2,3,4,5]
 
-while tentativa != 0:
-    jogada = str(input('Qual o seu palpite? '))
-    if jogada == 'desisto':
-        certeza = str(input('Tem certeza que você quer desistir? [s/n] '))
-        if certeza == 's':
-            print('O pais era: {}'.format(pais))
-            print('')
-            continua = str(input('Quer jogar de novo? [s/n] '))
-            if continua == 's':
-                tentativa = tentativa
+while tentativa >= 0:
+    if tentativa != 0:
+        jogada = str(input('Qual o seu palpite? '))
+        if jogada == 'desisto':
+            certeza = str(input('Tem certeza que você quer desistir? [s/n] '))
+            if certeza == 's':
+                print('O país era: {}'.format(pais))
+                print('')
+                continua = str(input('Quer jogar de novo? [s/n] '))
+                if continua == 's':
+                    tentativa = tentativa
+                else:
+                    print('')
+                    print('Até a próxima!')
+                    tentativa = -1
             else:
                 print('')
-                print('Até a próxima!')
-                tentativa = 0
+                tentativa = tentativa
+
+        elif jogada == 'dica':
+            print(mostra_dicas(l_dica_disponivel,tentativa))
+            opcao = int(input('Escolha sua opção {}: '.format(dicas_possiveis(tentativa))))  
+            if opcao == 0:
+                tentativa = tentativa
+            elif opcao == 1:
+                cor_dica = r.choice(l_cor_bandeira)
+                l_cores.append(cor_dica)
+                dic_dicas['Cor da bandeira'] = l_cores
+                indice = l_cor_bandeira.index(cor_dica)
+                del l_cor_bandeira[indice]
+                tentativa -= 4
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+            elif opcao == 2:
+                cap_dica = sorteia_letra(dic_paises[pais]["capital"],l_capital_escolhida)
+                l_cap.append(cap_dica)
+                dic_dicas['Letra da capital'] = l_cap
+                l_capital_escolhida.append(cap_dica)
+                tentativa -= 3
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+            elif opcao == 3:
+                dic_dicas['Área (km2)'] = area_pais
+                tentativa -= 6
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+                indice = l_dica_disponivel.index(3)
+                del l_dica_disponivel[indice]
+            elif opcao == 4:
+                dic_dicas['População'] = populacao
+                tentativa -= 5
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+                indice = l_dica_disponivel.index(4)
+                del l_dica_disponivel[indice]
+            elif opcao == 5:
+                dic_dicas['Continente'] = continente
+                tentativa -= 7
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+                indice = l_dica_disponivel.index(5)
+                del l_dica_disponivel[indice]
+        
+        elif jogada == "inventario":
+            print(mostra_inventario(l_dist, dic_dicas, tentativa))
+            tentativa = tentativa
+
+        elif jogada == pais:
+            print(f'\033[36mParabénsssss!! Você ganhou o jogo.\033[m')
+            tentativa = 0
+
         else:
-            print('')
-            tentativa = tentativa
-
-    elif jogada == 'dica':
-        print(mostra_dicas(l_dica_disponivel,tentativa))
-        opcao = int(input('Escolha sua opção {}: '.format(l_dica_disponivel)))  
-        if tentativa < 7:
-            indice = l_dica_disponivel.index(5)
-            del l_dica_disponivel[indice]
-        elif tentativa < 6:
-            indice = l_dica_disponivel.index(3)
-            del l_dica_disponivel[indice]
-        elif tentativa < 5:
-            indice = l_dica_disponivel.index(4)
-            del l_dica_disponivel[indice]
-        elif tentativa < 4:
-            indice = l_dica_disponivel.index(1)
-            del l_dica_disponivel[indice]
-        elif tentativa < 3:
-            indice = l_dica_disponivel.index(2)
-            del l_dica_disponivel[indice]
-        
-        if opcao == 0:
-            tentativa = tentativa
-        elif opcao == 1:
-            cor_dica = r.choice(l_cor_bandeira)
-            l_cores.append(cor_dica)
-            dic_dicas['Cor da bandeira'] = l_cores
-            indice = l_cor_bandeira.index(cor_dica)
-            del l_cor_bandeira[indice]
-            tentativa -= 4
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
-        elif opcao == 2:
-            cap_dica = sorteia_letra(dic_paises[pais]["capital"],l_capital_escolhida)
-            l_cap.append(cap_dica)
-            dic_dicas['Letra da capital'] = l_cap
-            l_capital_escolhida.append(cap_dica)
-            tentativa -= 3
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
-        elif opcao == 3:
-            dic_dicas['Área (km2)'] = area_pais
-            tentativa -= 6
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
-            indice = l_dica_disponivel.index(3)
-            del l_dica_disponivel[indice]
-        elif opcao == 4:
-            dic_dicas['População'] = populacao
-            tentativa -= 5
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
-            indice = l_dica_disponivel.index(4)
-            del l_dica_disponivel[indice]
-        elif opcao == 5:
-            dic_dicas['Continente'] = continente
-            tentativa -= 7
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
-            indice = l_dica_disponivel.index(5)
-            del l_dica_disponivel[indice]
-        
-    elif jogada == "inventario":
-        print(mostra_inventario(l_dist, dic_dicas, tentativa))
-        tentativa = tentativa
-
-    elif jogada == pais:
-        print(f'\033[36mParabénsssss!! Você ganhou o jogo.\033[m')
-        tentativa = 0
+            if esta_na_lista(jogada, l_paises):
+                lat_pais = dic_paises[pais]["geo"]["latitude"]
+                long_pais = dic_paises[pais]["geo"]["longitude"]
+                lat = dic_paises[jogada]["geo"]["latitude"]
+                long = dic_paises[jogada]["geo"]["longitude"]
+                distancia = haversine(6371, lat_pais, long_pais, lat, long)
+                l_dist = adiciona_em_ordem(jogada,distancia,l_dist)
+                tentativa -= 1
+                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+            else:
+                print('Não reconheço esse país. Tente novamente.')
+                tentativa = tentativa 
+                print ('')
 
     else:
-        if esta_na_lista(jogada, l_paises):
-            lat_pais = dic_paises[pais]["geo"]["latitude"]
-            long_pais = dic_paises[pais]["geo"]["longitude"]
-            lat = dic_paises[jogada]["geo"]["latitude"]
-            long = dic_paises[jogada]["geo"]["longitude"]
-            d = haversine(6371, lat_pais, long_pais, lat, long)
-            l_dist = adiciona_em_ordem(jogada,d,l_dist)
-            tentativa -= 1
-            print(mostra_inventario(l_dist, dic_dicas, tentativa))
+        print('Você perdeu =(')
+        print('O país era: {}'.format(pais))
+        continua = str(input('Quer jogar de novo? [s/n] '))
+        if continua == 's':
+            print('')
+            tentativa = 20
         else:
-            print('Não reconheço esse país. Tente novamente.')
-            tentativa = tentativa 
-            print ('')
-
+            print('')
+            print('Até a próxima!')
+            tentativa = -1
 
