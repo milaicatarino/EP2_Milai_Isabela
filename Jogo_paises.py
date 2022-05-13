@@ -116,6 +116,10 @@ tentativa = 20
 lista_tentativas = []
 dic_dist = {}
 dic_dicas = {}
+l_cores = []
+l_cap = []
+l_pop = []
+l_cont = []
 
 while tentativa != 0:
     jogada = str(input('Qual o seu palpite? '))
@@ -151,8 +155,48 @@ while tentativa != 0:
 
         elif opcao == 1:
             cor_dica = r.choice(l_cor_bandeira)
-            dic_dicas['Cor da bandeira'] = cor_dica
+            l_cores.append(cor_dica)
+            dic_dicas['Cor da bandeira'] = l_cores
             del l_cor_bandeira(cor_dica)
+            i = mostra_inventario(dic_dist, dic_dicas)
+            print(i)
             tentativa -= 4
         
         elif opcao == 2:
+            cap_dica = r.choice(l_lista_capital)
+            l_cap.append(cap_dica)
+            dic_dicas['Letra da capital'] = l_cap
+            del l_lista_capital(cap_dica)
+            i = mostra_inventario(dic_dist, dic_dicas)
+            print(i)
+            tentativa -= 3
+        
+        elif opcao == 3:
+            area_dica = r.choice(area_pais)
+            l_area.append(area_dica)
+            dic_dicas['Área (km2)'] = l_area
+            del area_pais(area_dica)
+            i = mostra_inventario(dic_dist, dic_dicas)
+            print(i)
+            tentativa -= 6
+        
+        elif opcao == 4:
+            pop_dica = r.choice(populacao)
+            l_pop.append(pop_dica)
+            dic_dicas['Área (km2)'] = pop_dica
+            del populacao(pop_dica)
+            i = mostra_inventario(dic_dist, dic_dicas)
+            print(i)
+            tentativa -= 5
+        
+        elif opcao == 5:
+            cont_dica = r.choice(continente)
+            l_cont.append(cont_dica)
+            dic_dicas['Área (km2)'] = cont_dica
+            del continente(cont_dica)
+            i = mostra_inventario(dic_dist, dic_dicas)
+            print(i)
+            tentativa -= 7
+
+        
+
