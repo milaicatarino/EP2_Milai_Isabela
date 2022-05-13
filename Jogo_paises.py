@@ -68,6 +68,19 @@ def sorteia_letra(palavra,lista):
               
     return r.choice(saida)
 
+# Mostra inventario
+def mostra_inventario(dic_dist, dic_dicas):
+    print('Distâncias:')
+    if dic_dist != {}:
+        for pais,d in dic_dist.items():
+            print('      '+ str(int(d)) + ' km -> ' + str(pais))
+    
+    print('')
+    print('Dicas:')
+    if dic_dicas != {}:
+        for tipo,resp in dic_dicas.items():
+            print('      -'+ str(tipo) + ': ' + str(resp))
+
 print ('==========================================')
 print ('••••••••••••••••••••••••••••••••••••••••••')
 print ("-----Bem-vindo ao Jogo Insper Países!-----")
@@ -83,6 +96,17 @@ dic_paises = normaliza(dic)
 pais = sorteia_pais(dic_paises)
 print ('Um país foi sorteado aleatoriamente, tente adivinhar!')
 print ('Você tem 20 tentativa(s)')
+
+l_cor_bandeira = []
+for cor in dic_paises[pais]["bandeira"].values():
+    l_cor_bandeira.append(cor)
+
+print(l_cor_bandeira)
+print(dic_paises[pais]["capital"])
+
+l_lista_capital = []
+for letra in dic_paises[pais]["capital"].values():
+    l_cor_bandeira.append(cor)
 
 tentativa = 20
 lista_tentativas = []
@@ -105,4 +129,17 @@ while tentativa != 0:
             print('')
             tentativa = tentativa
 
-        
+    elif jogada == 'dica':
+        print('Mercado de dicas')   
+        print ('----------------------------------------') 
+        print ('1. Cor da bandeira  - custa 4 tentativas')
+        print ('2. Letra da capital - custa 3 tentativas')
+        print ('3. Área             - custa 6 tentativas')
+        print ('4. População        - custa 5 tentativas')
+        print ('5. Continente       - custa 7 tentativas')
+        print ('0. Sem dica')
+        print ('----------------------------------------')
+        opcao = int(input('Escolha sua opção [0|1|2|3|4|5]: '))
+        if opcao == 0:
+            tentativa = tentativa
+        #elif opcao = 1:
