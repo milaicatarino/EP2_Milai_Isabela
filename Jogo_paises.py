@@ -122,7 +122,7 @@ print ('Você tem 20 tentativa(s)')
 
 l_cor_bandeira = []
 for cor,porcentagem in dic_paises[pais]["bandeira"].items():
-    if porcentagem != 0:
+    if porcentagem != 0 and cor != 'outras':
         l_cor_bandeira.append(cor)
 
 l_capital_escolhida = []
@@ -223,4 +223,4 @@ while tentativa != 0:
         print(mostra_inventario(dic_dist, dic_dicas, tentativa))
         tentativa = tentativa
 
-    else:
+    #else:
