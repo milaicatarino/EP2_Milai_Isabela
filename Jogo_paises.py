@@ -262,7 +262,7 @@ while tentativa >= 0:
                 print('Não reconheço esse país. Tente novamente.')
                 tentativa = tentativa 
                 print ('')
-
+                
     else:
         print('Você perdeu =(')
         print('O país era: {}'.format(pais))
@@ -274,4 +274,3 @@ while tentativa >= 0:
             print('')
             print('Até a próxima!')
             tentativa = -1
-
