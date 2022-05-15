@@ -23,15 +23,14 @@ def sorteia_pais(dic):
     return pais
 
 # Distância
-def haversine(r, s_lat, s_lng, e_lat, e_lng):
-
-    s_lat = s_lat*math.pi/180                     
-    s_lng = s_lng*math.pi/180
-    e_lat = e_lat*math.pi/180                   
-    e_lng = e_lng*math.pi/180
-
-    d = 2 * r * math.asin((math.sin((e_lat - s_lat)/2)**2 + math.cos(s_lat)*math.cos(e_lat) * math.sin((e_lng - s_lng)/2)**2)**(1/2))
-
+def haversine(r, lat, lng, lat2, lng2):
+    latr = math.radians(lat)                     
+    lngr = math.radians(lng)
+    lat2r = math.radians(lat2)                  
+    lng2r = math.radians(lng2)
+    dentro = (math.sin((lat2r - latr)/2))**2 + math.cos(latr)*math.cos(lat2r)*(math.sin((lng2r - lngr)/2))**2
+    fora = math.asin(math.sqrt(dentro))
+    d = 2*r*fora
     return d
 
 # Adicionando em uma lista
@@ -79,8 +78,6 @@ def mostra_inventario(l_dist, dic_dicas, tentativa):
                 print(f'\033[33m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
             elif int(lista[1]) <= 5000:
                 print(f'\033[34m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
-            elif int(lista[1]) <= 6500:
-                print(f'\033[37m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
             elif int(lista[1]) <= 8000:
                 print(f'\033[35m      {str(int(lista[1]))} km -> {str(lista[0])}\033[m')
             else:
@@ -196,6 +193,7 @@ l_dica_disponivel = [0,1,2,3,4,5]
 l_palpites = []
 
 while tentativa >= 0:
+    print(pais)
     if tentativa != 0:
         jogada = str(input('Qual o seu palpite? '))
         if jogada == 'desisto':
@@ -205,7 +203,14 @@ while tentativa >= 0:
                 print('')
                 continua = str(input('Quer jogar de novo? [s/n] '))
                 if continua == 's':
-                    tentativa = tentativa
+                    pais = sorteia_pais(dic_paises)
+                    l_dist = []
+                    dic_dicas = {}
+                    l_cores = []
+                    l_cap = []
+                    l_dica_disponivel = [0,1,2,3,4,5]
+                    l_palpites = []
+                    tentativa = 20
                 else:
                     print('')
                     print('Até a próxima!')
@@ -280,6 +285,13 @@ while tentativa >= 0:
         continua = str(input('Quer jogar de novo? [s/n] '))
         if continua == 's':
             print('')
+            pais = sorteia_pais(dic_paises)
+            l_dist = []
+            dic_dicas = {}
+            l_cores = []
+            l_cap = []
+            l_dica_disponivel = [0,1,2,3,4,5]
+            l_palpites = []
             tentativa = 20
         else:
             print('')
