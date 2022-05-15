@@ -1,6 +1,6 @@
 import random as r
 import math
-from dados import *
+from dados_paises import *
 
 # Funções necessárias
 # Normalizando bases de países
@@ -143,6 +143,18 @@ def dicas_possiveis(tentativa):
 
     return l_dica_disponivel
 
+# Calcular distancias
+def calcula_distancia(jogada, pais):
+    for p in dic_paises:
+        if p == jogada:
+            lat = dic_paises[p]["geo"]["latitude"]
+            long = dic_paises[p]["geo"]["longitude"]
+        elif p == pais:
+            lat_pais = dic_paises[p]["geo"]["latitude"]
+            long_pais = dic_paises[p]["geo"]["longitude"]
+    r = 6371
+    return haversine(r, lat, long, lat_pais, long_pais)
+
 print ('==========================================')
 print ('••••••••••••••••••••••••••••••••••••••••••')
 print ("-----Bem-vindo ao Jogo Insper Países!-----")
@@ -181,6 +193,7 @@ dic_dicas = {}
 l_cores = []
 l_cap = []
 l_dica_disponivel = [0,1,2,3,4,5]
+l_palpites = []
 
 while tentativa >= 0:
     if tentativa != 0:
@@ -250,14 +263,12 @@ while tentativa >= 0:
 
         else:
             if esta_na_lista(jogada, l_paises):
-                lat_pais = dic_paises[pais]["geo"]["latitude"]
-                long_pais = dic_paises[pais]["geo"]["longitude"]
-                lat = dic_paises[jogada]["geo"]["latitude"]
-                long = dic_paises[jogada]["geo"]["longitude"]
-                distancia = haversine(6371, lat_pais, long_pais, lat, long)
-                l_dist = adiciona_em_ordem(jogada,distancia,l_dist)
-                tentativa -= 1
-                print(mostra_inventario(l_dist, dic_dicas, tentativa))
+                if not esta_na_lista(jogada, l_palpites):
+                    distancia = calcula_distancia(jogada, pais)
+                    l_dist = adiciona_em_ordem(jogada,distancia,l_dist)
+                    tentativa -= 1
+                    print(mostra_inventario(l_dist, dic_dicas, tentativa))
+                    l_palpites.append(jogada)
             else:
                 print('Não reconheço esse país. Tente novamente.')
                 tentativa = tentativa 
