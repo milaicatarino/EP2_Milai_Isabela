@@ -301,6 +301,18 @@ while tentativa >= 0:
             l_cap = []
             l_dica_disponivel = [0,1,2,3,4,5]
             l_palpites = []
+            l_cor_bandeira = []
+            for cor,porcentagem in dic_paises[pais]["bandeira"].items():
+                if porcentagem != 0 and cor != 'outras':
+                    l_cor_bandeira.append(cor)
+
+            l_capital_escolhida = []
+
+            area_pais = dic_paises[pais]["area"]
+
+            populacao = dic_paises[pais]["populacao"]
+
+            continente = dic_paises[pais]["continente"]
             tentativa = 20
         else:
             print('')
