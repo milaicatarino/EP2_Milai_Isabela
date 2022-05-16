@@ -193,7 +193,6 @@ l_dica_disponivel = [0,1,2,3,4,5]
 l_palpites = []
 
 while tentativa >= 0:
-    print(pais)
     if tentativa != 0:
         jogada = str(input('Qual o seu palpite? '))
         if jogada == 'desisto':
