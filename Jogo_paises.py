@@ -35,16 +35,26 @@ def haversine(r, lat, lng, lat2, lng2):
 
 # Adicionando em uma lista
 def adiciona_em_ordem(pais,dist,l_paises):
-    if l_paises == [] or len(l_paises) == 1:
+    if l_paises == [] :
         l_paises.append([pais,dist])
         return l_paises
     for i in l_paises:
         if i[0] == pais:
             return l_paises
+    if len(l_paises) == 1:
+        if l_paises[0][1] > dist:
+            l_paises.insert(0,[pais,dist])
+            return l_paises
+        elif l_paises[0][1] < dist:
+            l_paises.append([pais,dist])
+            return l_paises
     for j in range(0,len(l_paises)):
         if l_paises[j][1] > dist:
             l_paises.insert(j,[pais,dist])
             return l_paises
+    
+    l_paises.append([pais,dist])
+    return l_paises
 
 # Está na lista?
 def esta_na_lista(pais, l_paises):
